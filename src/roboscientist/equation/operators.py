@@ -1,6 +1,6 @@
 import numpy as np
 import torch
-
+from scipy.special import lambertw
 
 class Operator:
     def __init__(self, func, name, repr, arity, complexity):
@@ -60,6 +60,74 @@ def _SAFE_POW_FUNC(x, y):
 
 
 OPERATORS = {
+
+
+    'log**2': Operator(
+        func=lambda x: _SAFE_LOG_FUNC(x) * _SAFE_LOG_FUNC(x) ,
+        name='log**2',
+        repr=lambda x: f'(log**2({x}))',
+        arity=1,
+        complexity=3,
+    ),
+
+    'X**-2': Operator(
+        func=lambda x: _SAFE_DIV_FUNC(_SAFE_DIV_FUNC(1 , x), x ),
+        name='X**-2',
+        repr=lambda x: f'(X**-2({x}))',
+        arity=1,
+        complexity=3,
+    ),
+
+
+    'sin**2': Operator(
+        func=lambda x: np.sin(x) * np.sin(x) ,
+        name='sin**2',
+        repr=lambda x: f'(sin**2({x}))',
+        arity=1,
+        complexity=3,
+    ),
+
+    'cos**2': Operator(
+        func=lambda x: np.cos(x) * np.cos(x) ,
+        name='cos**2',
+        repr=lambda x: f'(cos**2({x}))',
+        arity=1,
+        complexity=3,
+    ),
+
+
+    'add_oscil': Operator(
+        func=lambda x,y,z,r:   _SAFE_DIV_FUNC(np.cos(x) * np.cos(x) , z) + r*_SAFE_EXP_FUNC(-y) ,
+        name='add_oscil',
+        repr=lambda x,y,z,r: f'(add_oscil({x,y,z,r}))',
+        arity=4,
+        complexity=5,
+    ),
+
+
+    'OSCE': Operator(
+        func=lambda x,y,z: _SAFE_DIV_FUNC(np.cos(x) * np.cos(x) * _SAFE_EXP_FUNC(-y) , z*z),
+        name='OSCE',
+        repr=lambda x,y,z: f'(OSCE({x,y,z}))',
+        arity=3,
+        complexity=5,
+    ),
+
+    'OSCL': Operator(
+        func=lambda x,y,z: _SAFE_DIV_FUNC(np.cos(x) * np.cos(x) * _SAFE_LOG_FUNC(y) * _SAFE_LOG_FUNC(y), z*z),
+        name='OSCL',
+        repr=lambda x,y,z: f'(OSCL({x,y,z}))',
+        arity=3,
+        complexity=5,
+    ),
+
+    'LWF': Operator(
+        func=lambda x: lambertw(x, k=0).real,
+        name='LWF',
+        repr=lambda x: f'(LWF({x}))',
+        arity=1,
+        complexity=3,
+    ),
     'add': Operator(
         func=lambda x, y: x + y,
         name='add',
@@ -84,28 +152,28 @@ OPERATORS = {
     'sin': Operator(
         func=lambda x: np.sin(x),
         name='sin',
-        repr=lambda x: f'sin({x})',
+        repr=lambda x: f'(sin({x})',
         arity=1,
         complexity=3,
     ),
     'cos': Operator(
         func=lambda x: np.cos(x),
         name='cos',
-        repr=lambda x: f'cos({x})',
+        repr=lambda x: f'(cos({x})',
         arity=1,
         complexity=3,
     ),
     'log': Operator(
         func=lambda x: _SAFE_LOG_FUNC(x),
         name='safe_log',
-        repr=lambda x: f'log({x})',
+        repr=lambda x: f'(log({x})',
         arity=1,
         complexity=4,
     ),
     'sqrt': Operator(
         func=lambda x: _SAFE_SQRT_FUNC(x),
         name='safe_sqrt',
-        repr=lambda x: f'sqrt({x})',
+        repr=lambda x: f'(sqrt({x})',
         arity=1,
         complexity=2,
     ),

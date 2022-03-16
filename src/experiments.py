@@ -119,11 +119,11 @@ def run_experiment(
         error_to_beat = 1e9
         pareto_best_formulas = dict(sorted(pareto_best_formulas.items()))
 
-        const = rs_optimize_constants.optimize_constants(true_formula, X, y_true, const_opt_method)
-        yt = true_formula.func(X, const)
-        if type(yt) is float or yt.shape == (1,) or yt.shape == (1, 1) or yt.shape == ():
-            yt = np.repeat(np.array(yt).astype(np.float64),
-                           X.reshape(-1, vs.params.model_params['x_dim']).shape[0]).reshape(-1, 1)
+       # const = rs_optimize_constants.optimize_constants(true_formula, X, y_true, const_opt_method)
+       # yt = true_formula.func(X, const)
+       # if type(yt) is float or yt.shape == (1,) or yt.shape == (1, 1) or yt.shape == ():
+        #    yt = np.repeat(np.array(yt).astype(np.float64),
+         #                  X.reshape(-1, vs.params.model_params['x_dim']).shape[0]).reshape(-1, 1)
         for complexity, (formula, error) in pareto_best_formulas.items():
             f = rs_equation.Equation(formula.split())
             const = rs_optimize_constants.optimize_constants(f, X, y_true, const_opt_method)
@@ -132,7 +132,8 @@ def run_experiment(
                 y_pred = np.repeat(np.array(y_pred).astype(np.float64),
                                    X.reshape(-1, vs.params.model_params['x_dim']).shape[0]).reshape(-1, 1)
 
-            tm = mean_squared_error(y_pred, yt)
+            #tm = mean_squared_error(y_pred, yt)
+            tm = 0
             success = True if tm < 1e-9 else False
             complexity_best.append([complexity, f.repr(constants), error, tm, success])
             if error < error_to_beat:
@@ -141,6 +142,7 @@ def run_experiment(
                 pareto_best.append([complexity, f.repr(constants), error, tm, success])
 
         return complexity_best, pareto_best, result
+    
     complexity_best, pareto_best, result = final_log(vs.stats.all_best_per_complexity)
 
     if logger is not None:

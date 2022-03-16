@@ -4,7 +4,7 @@ import argparse
 from experiments import run_experiment
 import roboscientist.equation.equation as rs_equation
 import roboscientist.equation.operators as rs_operators
-from equation_test import EQUATIONS
+#from equation_test import EQUATIONS
 
 
 def get_offsprings(list_of_tokens, idx):
@@ -46,8 +46,9 @@ if __name__ == '__main__':
     parser.add_argument("--pretrain", type=int)
     args = parser.parse_args()
 
-    filename = f'{args.eq}_noise0.{args.noise:0>2}.csv'
-    true_func, free_variables = EQUATIONS[args.eq]
+    #filename = f'{args.eq}_noise0.{args.noise:0>2}.csv'
+    filename = 'simulated_rhs_10.csv'
+    #true_func, free_variables = EQUATIONS[args.eq]
     df = pd.read_csv(os.path.join(args.path, filename), sep=',', header=None)
     X = df.iloc[:, :-1]
     y = df.iloc[:, -1]
@@ -55,16 +56,16 @@ if __name__ == '__main__':
     run_experiment(
         X.values, y.values,
         functions=list(rs_operators.OPERATORS.keys()),
-        free_variables=free_variables,
+       # free_variables=free_variables,
         wandb_proj='WANDB-PROJECT',
-        project_name='EXP-NAME',
+        project_name='simulated_rhs_10',
         constants=[],
         float_constants=rs_operators.FLOAT_CONST,
         epochs=400,
         n_formulas_to_sample=5000,
         max_formula_length=30,
         formula_predicate=predicate,
-        true_formula=rs_equation.Equation(true_func),
+        #true_formula=rs_equation.Equation(true_func),
         latent=args.latent,
         lstm_hidden_dim=args.hidden,
         device='cuda',
